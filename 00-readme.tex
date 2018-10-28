@@ -1,0 +1,156 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={httr扩展包测试学习报告},
+            pdfauthor={hulilei},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{httr扩展包测试学习报告}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{hulilei}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2018/10/28}
+
+
+\begin{document}
+\maketitle
+
+\subsection{httr主要设计目标}\label{httr}
+
+The aim of httr is to provide a wrapper for the curl package, customised
+to the demands of modern web APIs.
+
+\subsection{httr主要功能特色}\label{httr}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Functions for the most important http verbs: \textbf{GET(), HEAD(),
+  PATCH(), PUT(), DELETE() and POST()}.包含http协议的主要函数
+\item
+  Automatic connection sharing across requests to the same website (by
+  default, curl handles are managed automatically), cookies are
+  maintained across requests, and a up-to-date root-level SSL
+  certificate store is used.自动管理cookies与SSL状态信息
+\item
+  Requests return a standard reponse object that captures the http
+  status line, headers and body, along with other useful
+  information.返回标准的响应对象，包含状态,数据包头,数据包体及其他有用信息。
+\item
+  Response content is available with content() as a raw vector (as =
+  ``raw''), a character vector (as = ``text''), or parsed into an R
+  object (as = ``parsed''), currently for html, xml, json, png and
+  jpeg.提供3种输出格式,包含原始数据，文本及R对象
+\item
+  You can convert http errors into R errors with
+  \textbf{stop\_for\_status()}.获取http的错误信息
+\item
+  Config functions make it easier to modify the request in common ways:
+  set\_cookies(), add\_headers(), authenticate(), use\_proxy(),
+  verbose(), timeout(), content\_type(), accept(),
+  progress().提供修改访问请求的函数，方便修改相关的请求信息
+\item
+  Support for OAuth 1.0 and 2.0 with oauth1.0\_token() and
+  oauth2.0\_token(). The demo directory has eight OAuth demos: four for
+  1.0 (twitter, vimeo, withings and yahoo) and four for 2.0 (facebook,
+  github, google, linkedin). OAuth credentials are automatically cached
+  within a project.支持OAuth1.0与2.0的支持
+\end{enumerate}
+
+\subsection{httr的安装}\label{httr}
+
+\subsubsection{从CRAN中的安装}\label{cran}
+
+\texttt{install.packages("httr")}
+
+\subsubsection{从GitHub上安装}\label{github}
+
+\texttt{devtools::install\_github("r-lib/httr")}
+
+\subsection{快速上手,出发！！}
+
+\subsection{Including Plots}\label{including-plots}
+
+You can also embed plots, for example:
+
+\includegraphics{00-readme_files/figure-latex/pressure-1.pdf}
+
+Note that the \texttt{echo\ =\ FALSE} parameter was added to the code
+chunk to prevent printing of the R code that generated the plot.
+
+
+\end{document}

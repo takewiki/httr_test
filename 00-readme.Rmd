@@ -1,0 +1,130 @@
+---
+title: "httr扩展包测试学习报告"
+author: "hulilei"
+date: "2018/10/28"
+output:
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+   library(httr);
+```
+
+## httr主要设计目标
+
+  The aim of httr is to provide a wrapper for the curl package, customised to the demands of modern web APIs.
+  
+## httr主要功能特色
+
+1. Functions for the most important http verbs: **GET(), HEAD(), PATCH(), PUT(), DELETE() and POST()**.包含http协议的主要函数
+1. Automatic connection sharing across requests to the same website (by default, curl handles are managed automatically), cookies are maintained across requests, and a up-to-date root-level SSL certificate store is used.自动管理cookies与SSL状态信息
+1. Requests return a standard reponse object that captures the http status line, headers and body, along with other useful information.返回标准的响应对象，包含状态,数据包头,数据包体及其他有用信息。
+1. Response content is available with content() as a raw vector (as = "raw"), a character vector (as = "text"), or parsed into an R object (as = "parsed"), currently for html, xml, json, png and jpeg.提供3种输出格式,包含原始数据，文本及R对象
+1. You can convert http errors into R errors with **stop_for_status()**.获取http的错误信息
+1. Config functions make it easier to modify the request in common ways: set_cookies(), add_headers(), authenticate(), use_proxy(), verbose(), timeout(), content_type(), accept(), progress().提供修改访问请求的函数，方便修改相关的请求信息
+1. Support for OAuth 1.0 and 2.0 with oauth1.0_token() and oauth2.0_token(). The demo directory has eight OAuth demos: four for 1.0 (twitter, vimeo, withings and yahoo) and four for 2.0 (facebook, github, google, linkedin). OAuth credentials are automatically cached within a project.支持OAuth1.0与2.0的支持
+
+## httr的安装
+
+### 从CRAN中的安装
+
+`install.packages("httr")`
+
+### 从GitHub上安装
+`devtools::install_github("r-lib/httr")`
+
+
+
+## 快速上手,出发！！
+
+### GET应用
+```{r}
+    r <- GET("http://httpbin.org/get")
+
+     r;
+```
+
+其中R是`r class(r)`类的`r typeof(r) `,一共有`r length(r)`个元素，元素名称分别为`r names(r)`。
+
+### status_code()获取状态代码
+```{r}
+     status_code(r);
+```
+
+### http_status()获取状态信息，不仅仅是代码
+```{r}
+    http_status(r);
+    r$status_code;
+```
+
+
+### headers()获取头部信息
+```{r}
+   headers(r);
+```
+
+### content()获取内容
+```{r}
+   content(r);
+   str(content(r));
+```
+
+### GET  with query
+```{r}
+  baidu12306 <-GET('https://www.baidu.com/s',query=list(wd=12306));
+  content(baidu12306,'text');
+  cookies(baidu12306);
+```
+
+### cookies()获取相应的信息
+
+```{r}
+   r1 <- GET("http://httpbin.org/cookies/set", query = list(a = 1))
+    cookies(r1)
+    r <- GET("http://httpbin.org/cookies/set", query = list(b = 1))
+    cookies(r)
+```
+
+
+## request 请求的处理
+
+### GET
+
+```{r}
+r <- GET("http://httpbin.org/get", 
+  query = list(key1 = "value1", key2 = "value2")
+)
+content(r)$args
+
+```
+如果相应的参数被应用为NULL，则系统将自动删除此元素
+```{r}
+r <- GET("http://httpbin.org/get", 
+  query = list(key1 = "value 1", "key 2" = "value2", key3 = NULL))
+content(r)$args
+```
+
+### POST()
+```{r}
+  # r <- POST("http://httpbin.org/post", body = list(a = 1, b = 2, c = 3))
+
+url <- "http://httpbin.org/post"
+body <- list(a = 1, b = 2, c = 3)
+# Form encoded
+r_form <- POST(url, body = body, encode = "form");
+r_form;
+# Multipart encoded
+r_multipart <- POST(url, body = body, encode = "multipart");
+r_multipart;
+# JSON encoded
+r_json <- POST(url, body = body, encode = "json");
+r_json;
+```
+
+### POST WITH FILES
+```{r}
+r_file <- POST(url, body = upload_file("mypath.txt"));
+r_file;
+```
+
